@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app: iot-frontend
-  name: iot-frontend
+  name: ntt-iot-frontend
 spec:
   ports:
   - name: 8080-tcp

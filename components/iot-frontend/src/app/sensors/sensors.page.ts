@@ -23,6 +23,18 @@ export class SensorsPage implements OnInit, OnDestroy {
     public toastController: ToastController
   ) { }
 
+  async presentNttAlarm(message: string) {
+      const toast = await this.toastController.create({
+        header: 'ALARM!',
+        message: message,
+        showCloseButton: true,
+        position: 'top',
+        color: 'danger'
+      });
+      toast.present();
+      // console.debug('*** presentToastTemperature ');
+  }
+
   async presentToastTemperature() {
     const toast = await this.toastController.create({
       header: 'Temperature ALERT!',
@@ -166,8 +178,9 @@ updateChartData() {
     // console.log(indexChart);
     const tmp = this.charts[indexChart].userOptions.title.text.split(',');
     // console.log(tmp);
+    // console.log(this.machineData);
     const series = this.machineData.filter(el => el.machineId === tmp[0]
-    && el.sensorId === tmp[1] && el.metricType === tmp[2]);
+    && el.sensorId === tmp[1]);
     // console.log(series);
     let sd = series.map(el => {
       const point = {x: null, y: null};
@@ -198,12 +211,14 @@ ngOnInit() {
   this.websocketService.init(null);
 
   let sub = this.websocketService.observeGpsEvents().pipe().subscribe(data => {
-    // TODO
+    console.log("Received GPS data...");
+    console.log(data);
   });
   this.subscriptions.push(sub);
 
   sub = this.websocketService.observeLightEvents().pipe().subscribe(data => {
-    // TODO
+    console.log("Received Light data...");
+    console.log(data);
   });
   this.subscriptions.push(sub);
 
@@ -215,6 +230,51 @@ ngOnInit() {
   sub = this.websocketService.observeVibrationEvents().pipe().subscribe(data => {
     this.handleMachineData(data, 'vibration');
   });
+  this.subscriptions.push(sub);
+
+  sub = this.websocketService.observeNttAlarmEvents().pipe().subscribe(data => {
+    console.log("Received NTT alarm data...");
+    let alarm = JSON.parse(this.ab2str(data));
+    console.log(alarm);
+    this.presentNttAlarm(this.ab2str(data));
+  });
+  this.subscriptions.push(sub);
+
+  sub = this.websocketService.observeNttValuesEvents().pipe().subscribe(data => {
+      console.log("Received NTT values data...");
+      let dataPoint = JSON.parse(this.ab2str(data));
+      // console.log(dataPoint);
+
+      const metricTyp = 'vibration';
+      const chartTitle = dataPoint.gateway_UUID + ',' + dataPoint.id;
+          // used in UI to setup divs
+          this.displayCharts.add(chartTitle);
+          // save metric
+          this.machineData.push(
+            {
+              machineId: String(dataPoint.gateway_UUID),
+              sensorId: String(dataPoint.id),
+              metricType: String(metricTyp),
+              value: Number(dataPoint.value),
+              timestamp: Number(Date.now())
+            }
+          );
+
+          // check if chart exists (one chart per machine)
+          const m = this.charts.filter(el => el.userOptions.title.text === chartTitle);
+          if (m.length === 0) {
+            const unit = metricTyp === 'vibration' ? 'mm/s' : 'Celsius';
+            const series = {
+              name: metricTyp,
+              type: undefined,
+              data: []
+            };
+            setTimeout(() => {
+              this.charts.push(this.plotDynamicSplineChart(chartTitle, series, unit, 70));
+              // console.log(this.charts);
+            }, 100);
+          }
+    });
   this.subscriptions.push(sub);
 
   // ALERTS

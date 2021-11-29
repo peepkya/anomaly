@@ -38,6 +38,28 @@ export class WebsocketService {
         this.connect();
     }
 
+    observeNttValuesEvents() {
+        console.debug('observeNttValuesEvents');
+        const observable = new Observable(observer => {
+            this.socket.on('ntt-values', (data) => {
+                // console.debug('gps-event -> Received gps sensor data');
+                observer.next(data);
+            });
+        });
+        return observable;
+    }
+
+    observeNttAlarmEvents() {
+        console.debug('observeNttAlarmEvents');
+        const observable = new Observable(observer => {
+            this.socket.on('ntt-alarm', (data) => {
+                // console.debug('gps-event -> Received gps sensor data');
+                observer.next(data);
+            });
+        });
+        return observable;
+    }
+
     observeGpsEvents() {
         console.debug('observeGpsEvents');
         const observable = new Observable(observer => {
