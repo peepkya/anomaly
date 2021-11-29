@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: iot-consumer-cfg
 data:
-  MQTT_BROKER: 'ws://broker-amq-mqtt-all-0-svc:61616'
+  MQTT_BROKER: 'ws://amq-mqtt-mqtt-0-svc:1883'
   MQTT_PASSWORD: iotuser
   MQTT_USER: iotuser
   PORT: '3000'
@@ -13,9 +13,11 @@ data:
   TOPIC_TEMPERATURE: iot-sensor/sw/temperature
   TOPIC_VIBRATION: iot-sensor/sw/vibration
   TOPIC_LIGHT: iot-sensor/sw/light
+  TOPIC_NTT_VALUES: MSAPValue
+  TOPIC_NTT_ALARM: MSAPAlarm
   TEMPERATURE_ALERT_ENABLED: 'false'
-  VIBRATION_ALERT_ENABLED: 'true'
-  VIBRATION_ANOMALY_ENABLED: 'true'
+  VIBRATION_ALERT_ENABLED: 'false'
+  VIBRATION_ANOMALY_ENABLED: 'false'
   ANOMALY_DETECTION_URL: 'http://anomaly-detection-predictor:8000'
 
 

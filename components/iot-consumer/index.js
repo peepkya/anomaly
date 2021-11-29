@@ -11,6 +11,8 @@ var topic_light = process.env.TOPIC_LIGHT || "iot-sensor/sw/light";
 var topic_gps = process.env.TOPIC_GPS || "iot-sensor/sw/gps";
 var topic_temperature = process.env.TOPIC_TEMPERATURE || "iot-sensor/sw/temperature";
 var topic_vibration = process.env.TOPIC_VIBRATION || "iot-sensor/sw/vibration";
+var topic_ntt_values = process.env.TOPIC_NTT_VALUES || "MSAPValue";
+var topic_ntt_alarm = process.env.TOPIC_NTT_ALARM || "MSAPAlarm";
 
 // MQTT connection
 // var mqtt_broker = process.env.MQTT_BROKER || "ws://broker-amq-mqtt-all-0-svc";
@@ -69,6 +71,8 @@ client.on('connect', function () {
     client.subscribe(topic_temperature, function (err) {});
     client.subscribe(topic_vibration, function (err) {});
     client.subscribe(topic_light, function (err) {});
+    client.subscribe(topic_ntt_values, function (err) {});
+    client.subscribe(topic_ntt_alarm, function (err) {});
 })
 
 client.on('message', (topic, message) => {
@@ -81,9 +85,23 @@ client.on('message', (topic, message) => {
             return handleVibration(message);
         case topic_light:
             return handleLight(message);
+        case topic_ntt_values:
+            return handleNttValues(message);
+        case topic_ntt_alarm:
+            return handleNttAlarm(message);
     }
     console.log('No handler for topic %s', topic)
 })
+
+function handleNttValues(message) {
+    console.log('handleNttValues data %s', message);
+    io.sockets.emit("ntt-values", message);
+}
+
+function handleNttAlarm(message) {
+    console.log('handleNttAlarm data %s', message);
+    io.sockets.emit("ntt-alarm", message);
+}
 
 function handleGps(message) {
     console.log('handleGps data %s', message);
