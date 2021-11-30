@@ -45,6 +45,22 @@ You can then execute your native executable with: `./target/device-registry-1.0.
 
 If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.html.
 
+## Build in OpenShift
+
+```shell script
+./mvnw clean package -DskipTests -Dquarkus.container-image.build=true
+```
+
+## Build locally and push to Quay.io
+
+```shell script
+./mvnw clean package -DskipTests
+
+docker build -f src/main/docker/Dockerfile.jvm -t quay.io/<repo>/ntt-device-registry:1.0 .
+
+docker push quay.io/<repo>/ntt-device-registry:1.0
+```
+
 ## Related guides
 
 - OpenShift ([guide](https://quarkus.io/guides/openshift)): Generate OpenShift resources from annotations
