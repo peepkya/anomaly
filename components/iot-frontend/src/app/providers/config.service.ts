@@ -12,6 +12,8 @@ export class ConfigService {
     websocketHost;
     websocketPath;
     SERVER_TIMEOUT = 1000;
+    CHART_REFRESH_INTERVAL = 2000;
+    CHART_BUFFER_ENTRIES = 500;
 
     constructor(public http: HttpClient) {}
 
@@ -24,6 +26,8 @@ export class ConfigService {
         this.websocketHost = data.websocketHost;
         this.websocketPath = data.websocketPath;
         this.SERVER_TIMEOUT = data.SERVER_TIMEOUT;
+        this.CHART_REFRESH_INTERVAL = data.CHART_REFRESH_INTERVAL;
+        this.CHART_BUFFER_ENTRIES = data.CHART_BUFFER_ENTRIES;
     }
 
 }

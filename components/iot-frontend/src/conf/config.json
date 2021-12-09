@@ -1,5 +1,7 @@
 {
-    "websocketHost": "http://localhost:3000",
+    "websocketHost": "http://iot-consumer-ntt-maki.apps.ocp4.rhlab.de",
     "websocketPath": "/api/service-web/socket",
-    "SERVER_TIMEOUT": 7500
+    "SERVER_TIMEOUT": 7500,
+    "CHART_REFRESH_INTERVAL": 2000,
+    "CHART_BUFFER_ENTRIES": 500
 }

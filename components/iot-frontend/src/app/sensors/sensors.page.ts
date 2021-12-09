@@ -3,6 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ToastController } from '@ionic/angular';
 import * as HighCharts from 'highcharts';
+import { ConfigService } from './../providers/config.service';
 
 
 @Component({
@@ -20,7 +21,8 @@ export class SensorsPage implements OnInit, OnDestroy {
 
   constructor(
     public websocketService: WebsocketService,
-    public toastController: ToastController
+    public toastController: ToastController,
+    private confService: ConfigService
   ) { }
 
   async presentNttAlarm(message: string) {
@@ -168,8 +170,8 @@ export class SensorsPage implements OnInit, OnDestroy {
 
 updateChartData() {
   // console.log('DATA LENGTH: ' + this.machineData.length);
-  if (this.machineData.length > 200) {
-    this.machineData = this.machineData.slice(this.machineData.length - 200, this.machineData.length);
+  if (this.machineData.length > this.confService.CHART_BUFFER_ENTRIES) {
+    this.machineData = this.machineData.slice(this.machineData.length - this.confService.CHART_BUFFER_ENTRIES, this.machineData.length);
   }
 
   this.displayCharts.forEach(data => {
@@ -290,7 +292,7 @@ ngOnInit() {
 
   setInterval(() => {
     this.updateChartData();
-  }, 3000);
+  }, this.confService.CHART_REFRESH_INTERVAL);
 
 }
 
