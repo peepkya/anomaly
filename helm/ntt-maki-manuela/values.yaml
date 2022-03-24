@@ -7,7 +7,7 @@ ocpAppDomain: apps.ocp4.rhlab.de
 amqBroker:
   user: admin
   password: admin
-  tlsEnable: true
+  tlsEnable: false
   tlsSecretName: amq-tls-secret
 
 # MongoDB
@@ -28,4 +28,10 @@ consumer:
 # iot-frontend
 frontend:
   image: 'quay.io/oschneid/ntt-iot-dashboard:1.0'
+  imagePullPolicy: Always
+
+# Gateway Simulator
+gwSim:
+  install: true
+  image: 'quay.io/oschneid/ntt-gateway-simulator:ntt-maki'
   imagePullPolicy: Always
